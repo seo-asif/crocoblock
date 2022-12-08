@@ -1,0 +1,67 @@
+<?php
+
+add_action( 'jet-engine/register-macros', function(){ 
+
+    /**
+     * Format date string.
+     */
+    class Format_Date_String extends \Jet_Engine_Base_Macros {
+
+        public function macros_tag() {
+            return 'format_date_string';
+        }
+
+        public function macros_name() {
+            return esc_html__( 'Format date string', 'jet-engine' );
+        }
+
+        public function macros_args() {
+            return array(
+                'format' => array(
+                    'label'   => __( 'Format', 'jet-engine' ),
+                    'type'    => 'text',
+                    'default' => 'd.m.Y',
+                ),
+		'date_string' => array(
+                    'label'   => __( 'Date string', 'jet-engine' ),
+                    'type'    => 'text',
+                    'default' => 'now',
+                ),
+                'show_by' => array(
+                    'label'   => 'Show by:',
+                    'type'    => 'select',
+                    'options' => array(
+                        'utc'    => 'UTC+0',
+                        'server' => 'Server time'
+                    ),
+                    'default' => 'utc',
+                ),
+            );
+        }
+
+        public function macros_callback( $args = array() ) {
+
+            $format      = $args['format'] ?? '';
+	    $date_string = $args['date_string'] ?? '';
+            $show_by     = $args['show_by'] ?? 'utc';
+
+            if ( ! $format || ! $date_string ) {
+                return 'cannot format';
+            }
+			
+	    $timestamp = strtotime( $date_string );
+
+            if ( $show_by === 'utc' ) {
+                $result = date( $format, $timestamp );
+            } else {
+                $result = date( $format, $timestamp + get_option( 'gmt_offset' ) * 3600 );
+            }
+            
+            return $result;
+            
+        }
+    }
+    
+    new Format_Date_String();
+    
+} );
