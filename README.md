@@ -1,2 +1,2 @@
 # crocoblock
-Crocoblock is a paid plugin
+Crocoblock is a paid plugin which has variety
